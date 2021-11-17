@@ -1,0 +1,73 @@
+version: "2.1"
+services:
+  sabnzbd:
+    image: ghcr.io/linuxserver/sabnzbd
+    container_name: sabnzbd
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=America/Chicago
+    volumes:
+      - /home/Docker/sabnzdb/config:/config
+      - /mnt/share/Incoming:/downloads
+      - /mnt/share/Incoming/incomplete:/incomplete-downloads #optional
+    ports:
+      - 8080:8080
+      - 9090:9090
+    restart: unless-stopped
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=America/Chicago
+    volumes:
+      - /home/Docker/sonarr:/config
+      - /mnt/share//TV:/tv
+      - /mnt/share/Incoming:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=America/Chicago
+    volumes:
+      - /home/Docker/Radarr:/config
+      - /mnt/share/Movies:/movies #optional
+      - /mnt/share/Incoming:/downloads #optional
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=America/Chicago
+    volumes:
+      - /home/Docker/heimdall:/config
+    ports:
+      - 8181:80
+      - 443:443
+    restart: unless-stopped
+  jackett:
+    image: lscr.io/linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS=<run options here> #optional
+    volumes:
+      - /home/Docker:/config
+      - /mnt/share/Incoming:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
