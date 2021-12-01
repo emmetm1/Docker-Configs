@@ -71,21 +71,3 @@ services:
     ports:
       - 9117:9117
     restart: unless-stopped
-  jellyfin:
-    image: lscr.io/linuxserver/jellyfin
-    container_name: jellyfin
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Chicago
-      - JELLYFIN_PublishedServerUrl=192.168.50.252 #optional
-    volumes:
-      - /home/Docker/Jellyfin:/config
-      - /mnt/share/TV:/data/tvshows
-      - /mnt/share/Movies:/data/movies
-    ports:
-      - 8096:8096
-      - 8920:8920 #optional
-      - 7359:7359/udp #optional
-      - 1900:1900/udp #optional
-    restart: unless-stopped
