@@ -9,8 +9,8 @@ services:
       - TZ=America/Chicago
     volumes:
       - /home/Docker/sabnzdb/config:/config
-      - /home/Docker/sabnzdb/downloads:/downloads
-      - /home/Docker/sabnzdb/Incomplete:/incomplete-downloads #optional
+      - /mnt/Download-Temp/sabnzdb/downloads:/downloads
+      - /mnt/Download-Temp/sabnzdb/downloads/incomplete:/incomplete-downloads #optional
     ports:
       - 8080:8080
       - 9090:9090
@@ -25,7 +25,7 @@ services:
     volumes:
       - /home/Docker/sonarr:/config
       - /mnt/Media/TV:/tv
-      - /home/Docker/sabnzdb/downloads:/downloads
+      - /mnt/Download-Temp/sabnzdb/downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -39,7 +39,7 @@ services:
     volumes:
       - /home/Docker/Radarr:/config
       - /mnt/Media/Movies:/movies #optional
-      - /home/Docker/sabnzdb/downloads:/downloads #optional
+      - /mnt/Download-Temp/sabnzdb/downloads:/downloads #optional
     ports:
       - 7878:7878
     restart: unless-stopped
