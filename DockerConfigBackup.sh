@@ -13,3 +13,5 @@ tar --create --preserve-permissions --xz --file=/mnt/share/DockerConfigs/${today
 
 ## Restart containers ##
 docker-compose -f /home/Docker/MediaCompose.yml up -d
+
+#testing
