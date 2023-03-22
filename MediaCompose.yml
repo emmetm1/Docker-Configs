@@ -1,86 +1,93 @@
-version: "2.1"
 services:
   sabnzbd:
     image: ghcr.io/linuxserver/sabnzbd
     container_name: sabnzbd
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Chicago
     volumes:
-      - /home/Docker/sabnzdb/config:/config
+      - ./sabnzdb/config:/config
       - /mnt/Download-Temp/sabnzdb/downloads:/downloads
       - /mnt/Download-Temp/sabnzdb/downloads/incomplete:/incomplete-downloads #optional
     ports:
       - 8080:8080
       - 9090:9090
-    restart: unless-stopped
+
   sonarr:
     image: ghcr.io/linuxserver/sonarr
     container_name: sonarr
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Chicago
     volumes:
-      - /home/Docker/sonarr:/config
+      - ./sonarr:/config
       - /mnt/Media/TV:/tv
       - /mnt/Download-Temp/sabnzdb/downloads:/downloads
     ports:
       - 8989:8989
-    restart: unless-stopped
+
   radarr:
     image: lscr.io/linuxserver/radarr
     container_name: radarr
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Chicago
     volumes:
-      - /home/Docker/Radarr:/config
+      - ./Radarr:/config
       - /mnt/Media/Movies:/movies #optional
       - /mnt/Download-Temp/sabnzdb/downloads:/downloads #optional
     ports:
       - 7878:7878
-    restart: unless-stopped
+
   heimdall:
     image: ghcr.io/linuxserver/heimdall
     container_name: heimdall
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Chicago
     volumes:
-      - /home/Docker/heimdall:/config
+      - ./heimdall:/config
     ports:
       - 8181:80
       - 443:443
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
     restart: unless-stopped
-  db:
-    image: postgres:11-alpine
     environment:
-      POSTGRES_DB: wiki
-      POSTGRES_PASSWORD: wikijsrocks
-      POSTGRES_USER: wikijs
-    logging:
-      driver: "none"
-    restart: unless-stopped
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
     volumes:
-      - /home/Docker/WikiJS:/var/lib/postgresql/data
-  wiki:
-    image: requarks/wiki:2
-    depends_on:
-      - db
-    environment:
-      DB_TYPE: postgres
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: wikijs
-      DB_PASS: wikijsrocks
-      DB_NAME: wiki
-    restart: unless-stopped
+      - ./readarr:/config
+      - /mnt/Media/Books:/books #optional
+      - /mnt/Media/audiobooks:/audiobooks
+      - /mnt/Download-Temp/sabnzdb/downloads:/downloads #optional
     ports:
-      - 8484:3000
+      - 8787:8787
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    environment:
+      - AUDIOBOOKSHELF_UID=1000
+      - AUDIOBOOKSHELF_GID=1000
+    ports:
+      - 13378:80
+    volumes:
+      - /mnt/Media/audiobooks:/audiobooks
+      - ./audiobookshelf:/config
+      - ./audiobookshelf:/metadata
+    restart: unless-stopped
+
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
@@ -90,6 +97,19 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /home/Docker/Portainer:/data
+      - ./Portainer:/data
     ports:
       - 9000:9000
+
+  ombi:
+    image: lscr.io/linuxserver/ombi:latest
+    container_name: ombi
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+    volumes:
+      - ./ombi:/config
+    ports:
+      - 3579:3579
