@@ -5,7 +5,6 @@
 ## Format date ##
 today=$(date +"%Y-%m-%d")
 
-
 ## Stop containers ##
 docker compose -f /home/emmet/docker/docker-compose.yaml down
 
@@ -16,7 +15,6 @@ then
 else
     touch /mnt/WhemFiles/DockerConfigs/BACKUPFAILED_${today}.txt
 fi
-
 
 ## Restart containers ##
 docker compose -f /home/emmet/docker/docker-compose.yaml up -d
